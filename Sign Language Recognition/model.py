@@ -2,15 +2,16 @@ import os, cv2, math
 from keras.models import Sequential, model_from_json
 from keras.layers import Conv2D, MaxPooling2D, Flatten, Dense, Dropout, BatchNormalization
 from keras.preprocessing.image import ImageDataGenerator, load_img, image, img_to_array
-from keras.utils import plot_model
+# from keras.utils import plot_model
 import numpy as np
-from sklearn.model_selection import train_test_split
-from shutil import copyfile
+# from sklearn.model_selection import train_test_split
+# from shutil import copyfile
 from tqdm import tqdm
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
-import Augmentor
+# import Augmentor
 from PIL import Image
+import pickle
 
 dataset_path = 'asl_dataset_augmented'
 
@@ -63,23 +64,23 @@ history = classifier.fit_generator(training_data,
                                   validation_steps= math.ceil(validation_data.n/validation_data.batch_size))
 
 
+pickle.dump(classifier, open('model.pkl','wb'))
+# classifier_json = classifier.to_json()
+# with open("model.json", "w") as json_file:
+#     json_file.write(classifier_json)
 
-classifier_json = classifier.to_json()
-with open("model.json", "w") as json_file:
-    json_file.write(classifier_json)
+# classifier.save_weights("model.h5")
+# print("Model saved to disk")
 
-classifier.save_weights("model.h5")
-print("Model saved to disk")
+# json_file = open('model.json', 'r')
+# loaded_model_json = json_file.read()
+# json_file.close()
 
-json_file = open('model.json', 'r')
-loaded_model_json = json_file.read()
-json_file.close()
+# loaded_model = model_from_json(loaded_model_json)
 
-loaded_model = model_from_json(loaded_model_json)
-
-loaded_model.load_weights("model.h5")
-print('Loaded model from disk')
-loaded_model.compile(optimizer = 'adam', loss = 'categorical_crossentropy', metrics = ['accuracy'])
+# loaded_model.load_weights("model.h5")
+# print('Loaded model from disk')
+# loaded_model.compile(optimizer = 'adam', loss = 'categorical_crossentropy', metrics = ['accuracy'])
 
 
 

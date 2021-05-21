@@ -1,25 +1,14 @@
 from flask import Flask, request, jsonify, render_template
 import os, cv2, math
-# from keras.layers import Conv2D, MaxPooling2D, Flatten, Dense, Dropout, BatchNormalization
-# from keras.preprocessing.image import ImageDataGenerator, load_img, image, img_to_array
-# from keras.utils import plot_model
 import numpy as np
-from sklearn.model_selection import train_test_split
-from shutil import copyfile
-from tqdm import tqdm
-import matplotlib.pyplot as plt
-import matplotlib.image as mpimg
-import Augmentor
-from PIL import Image
+
+import keras
+# from PIL import Image
+import pickle
 
 app = Flask(__name__)
-json_file = open('model.json', 'r')
-loaded_model_json = json_file.read()
-json_file.close()
 
-loaded_model = model_from_json(loaded_model_json)
-
-loaded_model.load_weights("model.h5")
+loaded_model = pickle.load(open('model.pkl', 'rb'))
 
 @app.route('/')
 def home():
@@ -27,12 +16,6 @@ def home():
 
 @app.route('/predict',methods=['POST'])
 def predict():
-
-    # int_features = [int(x) for x in request.form.values()]
-    # final_features = [np.array(int_features)]
-    # prediction = model.predict(final_features)
-
-    # output = round(prediction[0], 2)
     key = cv2.waitKey(1)
     webcam = cv2.VideoCapture(0)
     i= 10
@@ -160,17 +143,17 @@ def predict():
         elif labels[0] == 35:
             sentence += 'Z'
 
-    print(sentence)
+    # print(sentence)
     return render_template('index.html', prediction_text=sentence)
 
-@app.route('/results',methods=['POST'])
-def results():
+# @app.route('/results',methods=['POST'])
+# def results():
 
-    data = request.get_json(force=True)
-    prediction = model.predict([np.array(list(data.values()))])
+#     data = request.get_json(force=True)
+#     prediction = loaded_model.predict([np.array(list(data.values()))])
 
-    output = prediction[0]
-    return jsonify(output)
+#     output = prediction[0]
+#     return jsonify(output)
 
 if __name__ == "__main__":
     app.run(debug=True)
