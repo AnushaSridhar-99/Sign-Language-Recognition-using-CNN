@@ -1,21 +1,36 @@
 from flask import Flask, request, jsonify, render_template
 import os, cv2, math
 import numpy as np
-
+from keras.models import model_from_json
 import keras
-# from PIL import Image
+from PIL import Image
 import pickle
+from gtts import gTTS
+from google_trans_new import google_translator
 
 app = Flask(__name__)
 
-loaded_model = pickle.load(open('model.pkl', 'rb'))
+json_file = open('model.json', 'r')
+loaded_model_json = json_file.read()
+json_file.close()
+
+loaded_model = model_from_json(loaded_model_json)
+
+loaded_model.load_weights("model.h5")
+print('Loaded model from disk')
+loaded_model.compile(optimizer = 'adam', loss = 'categorical_crossentropy', metrics = ['accuracy'])
 
 @app.route('/')
 def home():
     return render_template('index.html')
 
-@app.route('/predict',methods=['POST'])
-def predict():
+@app.route('/capture',methods=['POST'])
+def capture():
+    cat_dir = "Images"
+
+    for file in os.listdir(cat_dir):
+        os.remove(os.path.join(cat_dir, file))
+
     key = cv2.waitKey(1)
     webcam = cv2.VideoCapture(0)
     i= 10
@@ -34,9 +49,8 @@ def predict():
         if cv2.waitKey(1) == ord('q'):
             break
     webcam.release()
-    cv2.destroyAllWindows()  
+    cv2.destroyAllWindows() 
 
-    cat_dir = "Images"
     cat_files = os.listdir(cat_dir)
 
     for file in cat_files:
@@ -47,9 +61,16 @@ def predict():
         dest = os.path.join(cat_dir, file)
         im = Image.fromarray(src)
         im.save(dest)
-    
 
-    cat_dir = "Images"
+    return render_template('index.html', prediction_text="Captured succesfully")
+
+    
+    
+@app.route('/predict',methods=['POST'])
+def predict():
+    language = request.form['lang']
+    cat_dir = "Predict"
+
     cat_files = os.listdir(cat_dir)
     sentence = ''
     for i in cat_files:
@@ -142,18 +163,24 @@ def predict():
             sentence += 'Y'
         elif labels[0] == 35:
             sentence += 'Z'
+    
+    translator = google_translator()
+    result = translator.translate(sentence.lower(), lang_tgt=language)
 
-    # print(sentence)
+    output = gTTS(text=result, lang=language, slow=False, tld='com')
+    output.save('speech.mp3')
+
+    os.system("start speech.mp3")
     return render_template('index.html', prediction_text=sentence)
 
-# @app.route('/results',methods=['POST'])
-# def results():
+@app.route('/results',methods=['POST'])
+def results():
 
-#     data = request.get_json(force=True)
-#     prediction = loaded_model.predict([np.array(list(data.values()))])
+    data = request.get_json(force=True)
+    prediction = loaded_model.predict([np.array(list(data.values()))])
 
-#     output = prediction[0]
-#     return jsonify(output)
+    output = prediction[0]
+    return jsonify(output)
 
 if __name__ == "__main__":
     app.run(debug=True)

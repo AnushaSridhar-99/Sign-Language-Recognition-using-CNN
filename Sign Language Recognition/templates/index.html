@@ -16,18 +16,19 @@
 	<h2>American Sign Language Recognition</h2>
 
      <!-- Main Input For Receiving Query to our ML -->
-    <form action="{{ url_for('predict')}}"method="post">
-    	
-      <select name="lang" required>
-        <option selected disabled>Select Lang</option>
-        <option value="en">English</option>
-        <option value="kn">Kannada</option>
-        <option value="hi">Hindi</option>
-        <option value="te">Telugu</option>
-      </select>
-
+    <form action="{{ url_for('capture')}}"method="post">
 
         <button type="submit" class="btn btn-primary btn-block btn-large">Start camera</button>
+    </form>
+    <form action="{{ url_for('predict')}}" method="post">
+        <select name="lang" required>
+          <option selected disabled>Select Lang</option>
+          <option value="en">English</option>
+          <option value="kn">Kannada</option>
+          <option value="hi">Hindi</option>
+          <option value="te">Telugu</option>
+        </select>
+        <button type="submit" class="btn btn-primary btn-block btn-large">Predict</button>
     </form>
 
    <br>
