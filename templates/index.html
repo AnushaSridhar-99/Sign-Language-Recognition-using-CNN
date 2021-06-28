@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html >
+<head>
+  <meta charset="UTF-8">
+  <title>ASL Recognition</title>
+  <link href='https://fonts.googleapis.com/css?family=Pacifico' rel='stylesheet' type='text/css'>
+<link href='https://fonts.googleapis.com/css?family=Arimo' rel='stylesheet' type='text/css'>
+<link href='https://fonts.googleapis.com/css?family=Hind:300' rel='stylesheet' type='text/css'>
+<link href='https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300' rel='stylesheet' type='text/css'>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+<!-- jQuery library -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<!-- Latest compiled JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  
+</head>
+
+<body style="background: #000;">
+  <nav class="navbar navbar-inverse">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <a class="navbar-brand" href="#">ASL Communication</a>
+      </div>
+      <ul class="nav navbar-nav">
+        <li class="active"><a>Sign to text</a></li>
+        <li><a href="{{ url_for('toSign') }}">Text to sign</a></li>
+      </ul>
+    </div>
+  </nav>
+  <div class="login">
+	<h2>American Sign Language Recognition</h2>
+
+     <!-- Main Input For Receiving Query to our ML -->
+    <form action="{{ url_for('predict')}}" method="post">
+        <select class="form-control" name="sequence" style="margin-bottom: 5px;">
+          <option selected disabled>Select sequence</option>
+          <option value="Sequence-1">Sequence-1</option>
+          <option value="Sequence-2">Sequence-2</option>
+          <option value="Sequence-3">Sequence-3</option>
+          <option value="Sequence-4">Sequence-4</option>
+          <option value="Sequence-5">Sequence-5</option>
+          <option value="Sequence-6">Sequence-6</option>
+          <option value="Sequence-7">Sequence-7</option>
+        </select>
+        <select class="form-control" name="lang" required style="margin-bottom: 5px;">
+          <option selected disabled>Select Lang</option>
+          <option value="en">English</option>
+          <option value="kn">Kannada</option>
+          <option value="hi">Hindi</option>
+          <option value="te">Telugu</option>
+      </select>
+        <button type="submit" class="btn btn-primary btn-block btn-large">Predict</button>
+    </form>
+
+   <br>
+   <br>
+   <div style="font-weight: bold; font-size: 20px; color: white;">
+   {{ prediction_text }}
+    </div>
+   <br>
+   <audio controls>
+    <source src="{{ url_for('streamwav') }}" type="audio/mpeg" />
+    " Your browser does not support the audio element. "
+    </audio>
+    <!-- <audio src="{{ url_for('streamwav') }}"></audio> -->
+ </div>
+
+
+</body>
+</html>

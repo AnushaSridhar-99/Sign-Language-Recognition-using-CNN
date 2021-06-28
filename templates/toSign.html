@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html >
+<head>
+  <meta charset="UTF-8">
+  <title>ASL Recognition</title>
+  <link href='https://fonts.googleapis.com/css?family=Pacifico' rel='stylesheet' type='text/css'>
+<link href='https://fonts.googleapis.com/css?family=Arimo' rel='stylesheet' type='text/css'>
+<link href='https://fonts.googleapis.com/css?family=Hind:300' rel='stylesheet' type='text/css'>
+<link href='https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300' rel='stylesheet' type='text/css'>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+<!-- jQuery library -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<!-- Latest compiled JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  
+</head>
+
+<body style="background: #000;">
+  <nav class="navbar navbar-inverse">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <a class="navbar-brand" href="#">ASL Communication</a>
+      </div>
+      <ul class="nav navbar-nav">
+        <li><a href="{{ url_for('toText') }}">Sign to text</a></li>
+        <li class="active"><a href="#">Text to sign</a></li>
+      </ul>
+    </div>
+  </nav>
+  <div class="login" style="margin-top:-3%;">
+	<h2>American Sign Language Recognition</h2>
+
+     <!-- Main Input For Receiving Query to our ML -->
+    <form action="{{ url_for('convertToSign')}}" method="post" autocomplete="off">
+        <input class="form-control" type="text" name="sentence" placeholder="Enter text" style="margin-bottom: 5px;">
+        <button type="submit" class="btn btn-primary btn-block btn-large" style="margin-bottom: 5px;">Convert to Sign Language</button>
+    </form>
+    <video controls height="300px" width="300px">
+      <source src="{{url_for('streammp4')}}" type="video/mp4">
+    </video>
+
+ </div>
+
+</body>
+</html>
